@@ -16,24 +16,25 @@ namespace gpr5300
 		void End() override;
 		void Update(float dt) override;
 
-		float vertices[18] =
+		float vertices[12] =
 		{
 			0.0f, 1.0f, 0.0f,
-			-0.5f, 0.0f, 0.0f,
-			0.5f, 0.0f, 0.0f,
-			-0.5f, 0.0f, 0.0f,
+			1.0f, 0.0f, 0.0f,
 			0.0f, -1.0f, 0.0f,
-			0.5f, 0.0f, 0.0f
+			-1.0f, 0.0f, 0.0f
 		};
 
-		float color[18] =
+		float color[12] =
 		{
 			1.0f, 1.0f, 1.0f,
 			1.0f, 0.5f, 1.0f,
 			1.0f, 0.5f, 1.0f,
-			1.0f, 0.5f, 0.0f,
-			1.0f, 1.0f, 0.0f,
 			1.0f, 0.5f, 0.0f
+		};
+
+		unsigned int indices[6] = {
+			0,1,3,
+			1,2,3
 		};
 
 	private:
@@ -48,6 +49,11 @@ namespace gpr5300
 
 	void MyTriangle::Begin()
 	{
+		//EBOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+		glGenBuffers(1, &ebo_);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
 
 		//VBO
 		glGenBuffers(1, &vbo_[0]);
@@ -130,7 +136,7 @@ namespace gpr5300
 		const float colorValue = (std::cos(t + 4.0f));
 		glUniform1f(glGetUniformLocation(program_, "colorCoeff"), colorValue);
 		glBindVertexArray(vao_);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, indices);
 
 	}
 
