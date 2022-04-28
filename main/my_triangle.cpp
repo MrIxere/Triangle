@@ -1,15 +1,19 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <GL/glew.h>
+#include "gl/glew.h"
 
 #include "engine.h"
 #include "file_utility.h"
 #include "scene.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+
 namespace gpr5300
 {
-	class MyTriangle : public Scene
+	class MyTriangle final : public Scene
 	{
 	public:
 		void Begin() override;
@@ -18,23 +22,24 @@ namespace gpr5300
 
 		float vertices[12] =
 		{
-			0.0f, 1.0f, 0.0f,
-			1.0f, 0.0f, 0.0f,
-			0.0f, -1.0f, 0.0f,
-			-1.0f, 0.0f, 0.0f
+			 -0.5f, -0.5f,0.0f,
+			 -0.5f, 0.5f, 0.0f,
+			 0.5f, 0.5f, 0.0f,
+			0.5f, -0.5f, 0.0f
 		};
 
-		float color[12] =
+		float texCords[8] =
 		{
-			1.0f, 1.0f, 1.0f,
-			1.0f, 0.5f, 1.0f,
-			1.0f, 0.5f, 1.0f,
-			1.0f, 0.5f, 0.0f
+			1.0f, 1.0f,
+			1.0f, 0.0f,
+			0.0f, 0.0f,
+			0.0f, 1.0f
 		};
 
-		unsigned int indices[6] = {
-			0,1,3,
-			1,2,3
+		unsigned int indices[6] =
+		{
+			0, 1, 3,
+			1, 2, 3
 		};
 
 	private:
@@ -42,18 +47,33 @@ namespace gpr5300
 		GLuint fragmentShader_ = 0;
 		GLuint program_ = 0;
 		GLuint vao_ = 0;
-		GLuint vbo_[2] = {};
 		GLuint ebo_ = 0;
+		GLuint vbo_[2] = {};
+		unsigned int texture_;
+		int texWidth_, texHeight_, nrChannels_;
 		float t = 0.0f;
+
 	};
 
 	void MyTriangle::Begin()
 	{
-		//EBOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+		unsigned char* data = stbi_load("data/textures/drip.png", &texWidth_, &texHeight_, &nrChannels_, 0);
+
+		//Textures
+		if (!data)
+		{
+			std::cerr << "Failed to load texture!";
+		}
+		glGenTextures(1, &texture_);
+		glBindTexture(GL_TEXTURE_2D, texture_);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth_, texHeight_, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		std::free (data);
+
+		//EBO
 		glGenBuffers(1, &ebo_);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
 
 		//VBO
 		glGenBuffers(1, &vbo_[0]);
@@ -61,9 +81,15 @@ namespace gpr5300
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 		glGenBuffers(1, &vbo_[1]);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo_[1]);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(color), color, GL_STATIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, ebo_);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(texCords), texCords, GL_STATIC_DRAW);
 
+		glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+		glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		//VAO
 		glGenVertexArrays(1, &vao_);
@@ -72,8 +98,9 @@ namespace gpr5300
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo_[1]);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(1);
+
 
 
 		//Load shaders
@@ -123,8 +150,10 @@ namespace gpr5300
 
 		glDeleteShader(vertexShader_);
 		glDeleteShader(fragmentShader_);
+		glDeleteTextures(1, &texture_);
 
 		glDeleteVertexArrays(1, &vao_);
+
 	}
 
 	void MyTriangle::Update(float dt)
@@ -132,9 +161,11 @@ namespace gpr5300
 		t += dt;
 
 		//Draw program
+
 		glUseProgram(program_);
-		const float colorValue = (std::cos(t + 4.0f));
-		glUniform1f(glGetUniformLocation(program_, "colorCoeff"), colorValue);
+		glUniform1i(glGetUniformLocation(program_, "ourTexture"), 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 1);
 		glBindVertexArray(vao_);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, indices);
 
