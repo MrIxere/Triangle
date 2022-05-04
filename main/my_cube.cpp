@@ -13,7 +13,27 @@
 
 namespace gpr5300
 {
+	class Shader
+	{
+	public:
 
+	private:
+
+	};
+
+	class Pipeline
+	{
+	public:
+
+	private:
+
+	};
+
+	class Texture
+	{
+	public:
+		
+	};
 
 	class Cube final : public Scene
 	{
@@ -32,10 +52,10 @@ namespace gpr5300
 
 		float texCords[8] =
 		{
-			1.0f, 1.0f,
-			1.0f, 0.0f,
+			0.0f, 1.0f,
 			0.0f, 0.0f,
-			0.0f, 1.0f
+			1.0f, 0.0f,
+			1.0f, 1.0f
 		};
 
 		unsigned int indices[6] =
@@ -106,7 +126,7 @@ namespace gpr5300
 
 
 		//Load shaders
-		const auto vertexContent = LoadFile("data/shaders/my_triangle/triangle.vert");
+		const auto vertexContent = LoadFile("data/shaders/my_cube/cube.vert");
 		const auto* ptr = vertexContent.data();
 		vertexShader_ = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vertexShader_, 1, &ptr, nullptr);
@@ -118,7 +138,7 @@ namespace gpr5300
 		{
 			std::cerr << "Error while loading vertex shader\n";
 		}
-		const auto fragmentContent = LoadFile("data/shaders/my_triangle/triangle.frag");
+		const auto fragmentContent = LoadFile("data/shaders/my_cube/cube.frag");
 		ptr = fragmentContent.data();
 		fragmentShader_ = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fragmentShader_, 1, &ptr, nullptr);
