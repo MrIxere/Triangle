@@ -50,6 +50,7 @@ namespace gpr5300
                         newWindowSize.x = event.window.data1;
                         newWindowSize.y = event.window.data2;
                         //TODO do something with the new size
+                        glViewport(0, 0, newWindowSize.x, newWindowSize.y);
                         break;
                     }
                     default:
