@@ -184,6 +184,7 @@ namespace gpr5300
 		Texture texture_;
 		Pipeline shader_;
 		Mesh mesh_;
+		float t = 0.0f;
 	};
 
 	void Cube::Begin()
@@ -219,6 +220,9 @@ namespace gpr5300
 
 	void Cube::Update(float dt)
 	{
+		
+		t += dt;
+
 		glUseProgram(mesh_.program_);
 
 		glUniform1i(glGetUniformLocation(mesh_.program_, "ourTexture"), 0);
@@ -228,7 +232,7 @@ namespace gpr5300
 
 
 		glm::mat4 model = glm::mat4(1.0f);
-		model = rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = rotate(model, t * glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
 		glm::mat4 view = glm::mat4(1.0f);
 		view = translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
@@ -236,7 +240,7 @@ namespace gpr5300
 		glm::mat4 projection/* = glm::mat4(1.0f)*/;
 		projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-		//t += dt;
+		
 
 		//Draw program
 
