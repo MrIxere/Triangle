@@ -292,13 +292,13 @@ namespace gpr5300
 
 
 		glm::mat4 model = glm::mat4(1.0f);
-		model = rotate(model, t * glm::radians(10.0f), glm::vec3(65.0f, 42.0f, 12.0f));
+		model = rotate(model, t * glm::radians(50.0f), glm::vec3(65.0f, 42.0f, 12.0f));
 
 		glm::mat4 view = glm::mat4(1.0f);
-		view = translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+		view = translate(view,  glm::vec3(0.0f, 0.0f, -3.0f));
 
 		glm::mat4 projection/* = glm::mat4(1.0f)*/;
-		projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+		projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 100.0f);
 
 		
 
