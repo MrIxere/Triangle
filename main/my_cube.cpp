@@ -10,6 +10,14 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+//new includes
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+
+
+
 
 namespace gpr5300
 {
@@ -47,30 +55,49 @@ namespace gpr5300
 
 	};
 
-	struct Pipeline
+	struct Mesh
 	{
-		float vertices[12] =
+		float vertices[24] =
 		{
-			-1.0f, -1.0f,0.0f,
-			-1.0f, 1.0f, 0.0f,
-			1.0f, 1.0f, 0.0f,
-			1.0f, -1.0f, 0.0f
+			-0.5f, -0.5f, 0.0f,
+			-0.5f,  0.5f, 0.0f,
+			 0.5f,  0.5f, 0.0f,
+			 0.5f, -0.5f, 0.0f,
+			-0.5f, -0.5f, 0.5f,
+			 0.5f, -0.5f, 0.5f,
+			-0.5f,  0.5f, 0.5f,
+			 0.5f,  0.5f, 0.5f
 		};
 
-		unsigned int indices[6] =
+		unsigned int indices[36] =
 		{
 			0, 1, 3,
-			1, 2, 3
+			1, 2, 3,
+
+			4, 5, 7,
+			5, 6, 7,
+
+			3, 2, 7,
+			2, 6, 7,
+
+			4, 5, 0,
+			5, 1, 0,
+
+			1, 5, 2,
+			5, 6, 2,
+
+			0, 4, 3,
+			4, 7, 3
 		};
 		GLuint program_ = 0;
 		GLuint vao_ = 0;
 		GLuint ebo_ = 0;
 		GLuint vbo_[2] = {};
 
-		void BindPipeline(Texture& texture)
+		void BindMesh(Texture& texture)
 		{
-
-			// VAO
+			//TODO créé classe différente
+			// VAO 
 			glGenVertexArrays(1, &vao_);
 			glBindVertexArray(vao_);
 
@@ -95,12 +122,12 @@ namespace gpr5300
 		}
 	};
 
-	struct Shader
+	struct Pipeline
 	{
 		GLuint vertexShader_ = 0;
 		GLuint fragmentShader_ = 0;
 
-		void BindShader(Pipeline& pipeline)
+		void BindPipeline(Mesh& mesh)
 		{
 			//Load shaders
 			const auto vertexContent = LoadFile("data/shaders/my_cube/cube.vert");
@@ -127,14 +154,14 @@ namespace gpr5300
 			{
 				std::cerr << "Error while loading fragment shader\n";
 			}
-			//Load program/pipeline
-			pipeline.program_ = glCreateProgram();
-			glAttachShader(pipeline.program_, vertexShader_);
-			glAttachShader(pipeline.program_, fragmentShader_);
-			glLinkProgram(pipeline.program_);
+			//Load program/mesh
+			mesh.program_ = glCreateProgram();
+			glAttachShader(mesh.program_, vertexShader_);
+			glAttachShader(mesh.program_, fragmentShader_);
+			glLinkProgram(mesh.program_);
 			//Check if shader program was linked correctly
 
-			glGetProgramiv(pipeline.program_, GL_LINK_STATUS, &success);
+			glGetProgramiv(mesh.program_, GL_LINK_STATUS, &success);
 			if (!success)
 			{
 				std::cerr << "Error while linking shader program\n";
@@ -155,8 +182,8 @@ namespace gpr5300
 	private:
 		//float t = 0.0f;
 		Texture texture_;
-		Shader shader_;
-		Pipeline pipeline_;
+		Pipeline shader_;
+		Mesh mesh_;
 	};
 
 	void Cube::Begin()
@@ -164,8 +191,8 @@ namespace gpr5300
 		glEnable(GL_DEPTH_TEST);
 
 		texture_.BindTexture();
-		pipeline_.BindPipeline(texture_);
-		shader_.BindShader(pipeline_);
+		mesh_.BindMesh(texture_);
+		shader_.BindPipeline(mesh_);
 		
 		
 		////Textures
@@ -180,29 +207,52 @@ namespace gpr5300
 	void Cube::End()
 	{
 		//Unload program/pipeline
-		glDeleteProgram(pipeline_.program_);
+		glDeleteProgram(mesh_.program_);
 
 		glDeleteShader(shader_.vertexShader_);
 		glDeleteShader(shader_.fragmentShader_);
 		glDeleteTextures(1, &texture_.texture_);
 
-		glDeleteVertexArrays(1, &pipeline_.vao_);
+		glDeleteVertexArrays(1, &mesh_.vao_);
 
 	}
 
 	void Cube::Update(float dt)
 	{
+		glUseProgram(mesh_.program_);
+
+		glUniform1i(glGetUniformLocation(mesh_.program_, "ourTexture"), 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture_.texture_);
+
+
+
+		glm::mat4 model = glm::mat4(1.0f);
+		model = rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+		glm::mat4 view = glm::mat4(1.0f);
+		view = translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+		glm::mat4 projection/* = glm::mat4(1.0f)*/;
+		projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
 		//t += dt;
 
 		//Draw program
 
-		glUseProgram(pipeline_.program_);
-		glUniform1i(glGetUniformLocation(pipeline_.program_, "ourTexture"), 0);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture_.texture_);
-		glBindVertexArray(pipeline_.vao_);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		int modelLoc = glGetUniformLocation(mesh_.program_, "model");
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
+		int viewLoc = glGetUniformLocation(mesh_.program_, "view");
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+		int projLoc = glGetUniformLocation(mesh_.program_, "projection");
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+		
+		glBindVertexArray(mesh_.vao_);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			
 	}
 
 
