@@ -23,12 +23,38 @@ namespace gpr5300
 {
 	struct Texture
 	{
-		float texCords[8] =
+		float texCords[48] =
 		{
 			0.0f, 1.0f,
 			0.0f, 0.0f,
 			1.0f, 0.0f,
+			1.0f, 1.0f,
+
+			0.0f, 1.0f,
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+
+			0.0f, 1.0f,
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+
+			0.0f, 1.0f,
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+
+			0.0f, 1.0f,
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+
+			0.0f, 1.0f,
+			0.0f, 0.0f,
+			1.0f, 0.0f,
 			1.0f, 1.0f
+
 		};
 		unsigned char* data;
 		unsigned int texture_ = 0;
@@ -38,7 +64,7 @@ namespace gpr5300
 
 		void BindTexture()
 		{
-			data = stbi_load("data/textures/Jeff.png", &texWidth_, &texHeight_, &nrChannels_, 0);
+			data = stbi_load("data/textures/amouJeff.png", &texWidth_, &texHeight_, &nrChannels_, 0);
 			glGenTextures(1, &texture_);
 			glBindTexture(GL_TEXTURE_2D, texture_);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth_, texHeight_, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
@@ -57,37 +83,71 @@ namespace gpr5300
 
 	struct Mesh
 	{
-		float vertices[24] =
+		float vertices[108] =
 		{
-			-0.5f, -0.5f, 0.0f,
-			-0.5f,  0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			-0.5f, -0.5f, 0.5f,
-			 0.5f, -0.5f, 0.5f,
-			-0.5f,  0.5f, 0.5f,
-			 0.5f,  0.5f, 0.5f
+			//Front
+			 -0.5f, -0.5f, -0.5f, //0
+			-0.5f, 0.5f, -0.5f,
+			 0.5f, 0.5f, -0.5f,
+			 0.5f, -0.5f, -0.5f,
+
+			 //Back
+			 -0.5f, -0.5f, 0.5f, //4
+			 -0.5f, 0.5f, 0.5f,
+			  0.5f, 0.5f, 0.5f,
+			  0.5f, -0.5f, 0.5f,
+
+			  //Right
+			  0.5f, -0.5f, -0.5f, //8
+			  0.5f, 0.5f, -0.5f,
+			  0.5f, 0.5f, 0.5f,
+			  0.5f, -0.5f, 0.5f,
+
+			  //Left
+			  -0.5f, -0.5f, -0.5f, //12
+			  -0.5f, 0.5f, -0.5f,
+			  -0.5f, 0.5f, 0.5f,
+			  -0.5f, -0.5f, 0.5f,
+
+			  //Top
+			  -0.5f, 0.5f, -0.5f, //16
+			   0.5f, 0.5f, -0.5f,
+			   0.5f, 0.5f, 0.5f,
+			  -0.5f, 0.5f, 0.5f,
+
+			  //Bottom
+			  -0.5f, -0.5f, -0.5f, //20
+			   0.5f, -0.5f, -0.5f,
+			   0.5f, -0.5f, 0.5f,
+			  -0.5f, -0.5f, 0.5f,
 		};
 
 		unsigned int indices[36] =
 		{
-			0, 1, 3,
-			1, 2, 3,
+			//Front
+			0, 1, 2,
+			0, 2, 3,
 
+			//Back
 			4, 5, 7,
 			5, 6, 7,
 
-			3, 2, 7,
-			2, 6, 7,
+			//Right
+			8, 9, 10,
+			8, 10, 11,
 
-			4, 5, 0,
-			5, 1, 0,
+			//Left
+			12, 13, 14,
+			12, 14, 15,
 
-			1, 5, 2,
-			5, 6, 2,
+			//Top
+			16, 17, 18,
+			16, 18, 19,
 
-			0, 4, 3,
-			4, 7, 3
+			//Bottom
+			20, 21, 22,
+			20, 22, 23
+			
 		};
 		GLuint program_ = 0;
 		GLuint vao_ = 0;
@@ -232,7 +292,7 @@ namespace gpr5300
 
 
 		glm::mat4 model = glm::mat4(1.0f);
-		model = rotate(model, t * glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = rotate(model, t * glm::radians(10.0f), glm::vec3(65.0f, 42.0f, 12.0f));
 
 		glm::mat4 view = glm::mat4(1.0f);
 		view = translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
@@ -255,8 +315,8 @@ namespace gpr5300
 
 		
 		glBindVertexArray(mesh_.vao_);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-			
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
 
 
