@@ -9,7 +9,9 @@ find_package(GLEW REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
+find_package(assimp CONFIG REQUIRED)
 find_path(STB_INCLUDE_DIRS "stb.h")
+find_path(STB_INCLUDE_DIRS "assimp.h")
 
 
 file(GLOB_RECURSE SHADER_FILES
@@ -85,7 +87,7 @@ file(GLOB_RECURSE DATA_FILES
 file(GLOB_RECURSE COMMON_FILES src/*.cpp include/*.h)
 add_library(Common STATIC ${COMMON_FILES} ${SHADER_FILES})
 target_include_directories(Common PUBLIC include/ ${STB_INCLUDE_DIRS})
-target_link_libraries(Common PUBLIC GLEW::GLEW glm::glm SDL2::SDL2 SDL2::SDL2main imgui::imgui)
+target_link_libraries(Common PUBLIC GLEW::GLEW glm::glm SDL2::SDL2 SDL2::SDL2main imgui::imgui assimp::assimp)
 set_target_properties(Common PROPERTIES UNITY_BUILD ON)
 add_dependencies(Common shader_target data_target)
 
