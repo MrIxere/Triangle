@@ -94,14 +94,18 @@ namespace gpr5300
 		{
 			glUseProgram(program);
 			const int objectColor = glGetUniformLocation(program, "objectColor");
-			glUniform3f(objectColor, 0.1f, 1.0f, 1.0f);
+			glUniform3f(objectColor, abs(cos(t*1)), abs(cos(t * 2)), abs(sin(t*3)) );
+
 			const int lightColor = glGetUniformLocation(program, "lightColor");
-			glUniform3f(lightColor, 2.0f, 2.0f, 5.0f);
+			glUniform3f(lightColor, 1.8f, 1.0f, 1.0f);
+
 			const int lightPos = glGetUniformLocation(program, "lightPos");
-			glUniform3f(lightPos, 2.0f, 2.0f, 5.0f);
+			glUniform3f(lightPos,0.0f,0.0f, 1.0f  );
+
 			const int viewPos = glGetUniformLocation(program, "viewPos");
-			glUniform3f(viewPos, 2.0f, 2.0f, 5.0f);
-			model_ = rotate(model_, glm::radians(-1.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+			glUniform3f(viewPos, 0.0f, 0.0f, 0.0f);
+
+			model_ = rotate(model_, glm::radians(0.5f), glm::vec3(1.0f, 1.0f, 1.0f));
 			projection_ = glm::perspective(glm::radians(45.f), (float)1920 / (float)1080, 0.1f, 100.0f);
 			view_ = translate(view_, glm::vec3(0.0f, 0.0f, 0.0f));
 			// retrieve the matrix uniform locations
@@ -393,7 +397,7 @@ namespace gpr5300
 		//Draw program
 		tt_ += dt;
 		processInput(dt);
-		mesh_.view_ = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+		mesh_.view_ = lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		mesh_.Draw(tt_);
 	}
 
