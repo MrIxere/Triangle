@@ -9,6 +9,7 @@
 #include "engine.h"
 #include "file_utility.h"
 #include "scene.h"
+#include <windows.h>
 
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -17,7 +18,6 @@
 
 namespace gpr5300
 {
-
 	class Texture
 	{
 	public:
@@ -50,6 +50,8 @@ namespace gpr5300
 	class Mesh
 	{
 	public:
+		glm::mat4 view_ = glm::mat4(1.0f);
+		//glm::mat4 view = glm::mat4(1.0f);
 		GLuint vbo_[2] = {};
 		void Generate()
 		{
@@ -66,8 +68,8 @@ namespace gpr5300
 
 			glGenBuffers(1, &vbo_[1]);
 			glBindBuffer(GL_ARRAY_BUFFER, vbo_[1]);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords), texCoords, GL_STATIC_DRAW);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(normals_), normals_, GL_STATIC_DRAW);
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 			glEnableVertexAttribArray(1);
 
 			//EBO
@@ -180,8 +182,9 @@ namespace gpr5300
 			20, 22, 23
 		};
 
-		float texCoords[48] =
+		float texCoords[72] =
 		{
+
 			0.0f, 1.0f,
 			0.0f, 0.0f,
 			1.0f, 0.0f,
@@ -215,12 +218,46 @@ namespace gpr5300
 			1.0f, 1.0f,
 		};
 
+		float normals_[72] =
+		{
+			0.0f, 0.0f, -1.0f,
+			0.0f, 0.0f, -1.0f,
+			0.0f, 0.0f, -1.0f,
+			0.0f, 0.0f, -1.0f,
+
+			0.0f, 0.0f, 1.0f,
+			0.0f, 0.0f, 1.0f,
+			0.0f, 0.0f, 1.0f,
+			0.0f, 0.0f, 1.0f,
+
+			1.0f, 0.0f, 0.0f,
+			1.0f, 0.0f, 0.0f,
+			1.0f, 0.0f, 0.0f,
+			1.0f, 0.0f, 0.0f,
+
+			-1.0f, 0.0f, 0.0f,
+			-1.0f, 0.0f, 0.0f,
+			-1.0f, 0.0f, 0.0f,
+			-1.0f, 0.0f, 0.0f,
+
+			0.0f, 1.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,
+
+			0.0f, -1.0f,0.0f,
+			0.0f, -1.0f,0.0f,
+			0.0f, -1.0f,0.0f,
+			0.0f, -1.0f,0.0f,
+
+		};
+
 		GLuint vao_ = 0;
 		GLuint ebo_ = 0;
 
 
 		glm::mat4 model_ = glm::mat4(1.0f);
-		glm::mat4 view_ = glm::mat4(1.0f);
+		
 		glm::mat4 projection_ = glm::mat4(1.0f);
 	};
 
@@ -303,7 +340,27 @@ namespace gpr5300
 		void Begin() override;
 		void End() override;
 		void Update(float dt) override;
+
+
+		void processInput(float dt)
+		{
+			const float cameraSpeed = 1.00f * dt; // adjust accordingly
+			if (GetKeyState('W') & 0x8000)
+				cameraPos += cameraSpeed * cameraFront;
+			if (GetKeyState('S') & 0x8000)
+				cameraPos -= cameraSpeed * cameraFront;
+			if (GetKeyState('A') & 0x8000)
+				cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+			if (GetKeyState('D') & 0x8000)
+				cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		}
+
 	private:
+
+		glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+		glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+		glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
 		Pipeline pipeline_;
 		Texture texture_;
 		Mesh mesh_;
@@ -331,9 +388,12 @@ namespace gpr5300
 	{
 		//Draw program
 		tt_ += dt;
+		processInput(dt);
+		mesh_.view_ = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		mesh_.Draw(tt_);
 	}
 
+	
 
 }
 
