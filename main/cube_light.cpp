@@ -97,6 +97,10 @@ namespace gpr5300
 			glUniform3f(objectColor, 0.1f, 1.0f, 1.0f);
 			const int lightColor = glGetUniformLocation(program, "lightColor");
 			glUniform3f(lightColor, 2.0f, 2.0f, 5.0f);
+			const int lightPos = glGetUniformLocation(program, "lightPos");
+			glUniform3f(lightPos, 2.0f, 2.0f, 5.0f);
+			const int viewPos = glGetUniformLocation(program, "viewPos");
+			glUniform3f(viewPos, 2.0f, 2.0f, 5.0f);
 			model_ = rotate(model_, glm::radians(-1.0f), glm::vec3(1.0f, 1.0f, 0.0f));
 			projection_ = glm::perspective(glm::radians(45.f), (float)1920 / (float)1080, 0.1f, 100.0f);
 			view_ = translate(view_, glm::vec3(0.0f, 0.0f, 0.0f));
