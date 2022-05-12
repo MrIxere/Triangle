@@ -15,6 +15,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+//TODO
+//refactor all this shit
 
 namespace gpr5300
 {
@@ -25,9 +27,14 @@ namespace gpr5300
 		{
 			data_ = stbi_load(file_path.c_str(),
 				&texWidth_, &texHeight_, &nrChannels_, 0);
+			if (data_ == nullptr)
+			{
+				//TODO
+			}
+			glActiveTexture(GL_TEXTURE0);
 			glGenTextures(1, &texture_);
 			glBindTexture(GL_TEXTURE_2D, texture_);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth_, texHeight_, 0, GL_RGB, GL_UNSIGNED_BYTE, data_);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth_, texHeight_, 0, GL_RGBA, GL_UNSIGNED_BYTE, data_);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -42,6 +49,7 @@ namespace gpr5300
 	private:
 		unsigned char* data_{};
 		unsigned int texture_ = 0;
+		unsigned int border_ = 0;
 		int texWidth_ = 0;
 		int texHeight_ = 0;
 		int nrChannels_ = 0;
@@ -52,7 +60,6 @@ namespace gpr5300
 	public:
 		glm::mat4 view_ = glm::mat4(1.0f);
 		//glm::mat4 view = glm::mat4(1.0f);
-		GLuint vbo_[2] = {};
 		void Generate()
 		{
 			// VAO
@@ -71,6 +78,12 @@ namespace gpr5300
 			glBufferData(GL_ARRAY_BUFFER, sizeof(normals_), normals_, GL_STATIC_DRAW);
 			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 			glEnableVertexAttribArray(1);
+			
+			glGenBuffers(1, &vbo_[2]);
+			glBindBuffer(GL_ARRAY_BUFFER, vbo_[2]);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords), texCoords, GL_STATIC_DRAW);
+			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+			glEnableVertexAttribArray(2);
 
 			//EBO
 			glGenBuffers(1, &ebo_);
@@ -93,19 +106,28 @@ namespace gpr5300
 		void Draw(float t)
 		{
 			glUseProgram(program);
-			const int objectColor = glGetUniformLocation(program, "objectColor");
-			glUniform3f(objectColor, abs(cos(t*1)), abs(cos(t * 2)), abs(sin(t*3)) );
-
+			/*const int objectColor = glGetUniformLocation(program, "objectColor");*/
 			const int lightColor = glGetUniformLocation(program, "lightColor");
-			glUniform3f(lightColor, abs(cos(t * 3)), abs(cos(t * 2)), abs(sin(t * 1)));
-
 			const int lightPos = glGetUniformLocation(program, "lightPos");
-			glUniform3f(lightPos, 0.0f, 0.0f, 1.0f);
-
 			const int viewPos = glGetUniformLocation(program, "viewPos");
-			glUniform3f(viewPos, 0.0f, 0.0f, 1.0f);
+			const int diffuse = glGetUniformLocation(program, "material.diffuse");
+			const int specular = glGetUniformLocation(program, "material.specular");
+			const int shininess = glGetUniformLocation(program, "material.shininess");
+			const int ambientL = glGetUniformLocation(program, "light.ambientL");
+			const int diffuseL = glGetUniformLocation(program, "light.diffuseL");
+			const int specularL = glGetUniformLocation(program, "light.specularL");
+			glUniform3f(lightPos, 0.0f, 0.0f, 1.0f);
+			/*glUniform3f(objectColor, abs(cos(t)), abs(sin(t)), abs(tan(t)));*/
+			glUniform3f(lightColor, 1.0f, 1.0f, 1.0f);
+			glUniform3f(viewPos, 0.0f, 0.0f, 2.0f);
+			glUniform1f(diffuse, 1);
+			glUniform3f(specular, 0.5f, 0.5f, 0.5f);
+			glUniform1f(shininess, 32);
+			glUniform3f(ambientL, 0.2f, 0.2f, 0.2f);
+			glUniform3f(diffuseL, 0.5f, 0.5f, 0.5f);
+			glUniform3f(specularL, 1.0f, 1.0f, 1.0f);
 
-			model_ = rotate(model_, glm::radians(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+			model_ = rotate(model_, glm::radians(0.5f), glm::vec3(1.0f, 1.0f, 0.0f));
 			projection_ = glm::perspective(glm::radians(45.f), (float)1920 / (float)1080, 0.1f, 100.0f);
 			view_ = translate(view_, glm::vec3(0.0f, 0.0f, 0.0f));
 			// retrieve the matrix uniform locations
@@ -117,10 +139,9 @@ namespace gpr5300
 			glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, &projection_[0][0]);
 
 			glBindVertexArray(vao_);
-			glActiveTexture(GL_TEXTURE0);
+			glActiveTexture(GL_TEXTURE1);
 			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 		}
-
 		GLuint program = 0;
 	private:
 		float vertices_[72] =
@@ -190,37 +211,29 @@ namespace gpr5300
 			20, 22, 23
 		};
 
-		float texCoords[72] =
+		float texCoords[48] =
 		{
-
 			0.0f, 1.0f,
 			0.0f, 0.0f,
 			1.0f, 0.0f,
-
 			1.0f, 1.0f,
 			0.0f, 1.0f,
 			0.0f, 0.0f,
-
 			1.0f, 0.0f,
 			1.0f, 1.0f,
 			0.0f, 1.0f,
-
 			0.0f, 0.0f,
 			1.0f, 0.0f,
 			1.0f, 1.0f,
-
 			0.0f, 1.0f,
 			0.0f, 0.0f,
 			1.0f, 0.0f,
-
 			1.0f, 1.0f,
 			0.0f, 1.0f,
 			0.0f, 0.0f,
-
 			1.0f, 0.0f,
 			1.0f, 1.0f,
 			0.0f, 1.0f,
-
 			0.0f, 0.0f,
 			1.0f, 0.0f,
 			1.0f, 1.0f,
@@ -261,6 +274,7 @@ namespace gpr5300
 		};
 
 		GLuint vao_ = 0;
+		GLuint vbo_[3] = {};
 		GLuint ebo_ = 0;
 
 
@@ -269,23 +283,23 @@ namespace gpr5300
 		glm::mat4 projection_ = glm::mat4(1.0f);
 	};
 
-	class Light
-	{
-	public:
-		void Generate(Mesh mesh)
-		{
-			glGenVertexArrays(1, &vao_);
-			glBindVertexArray(vao_);
+	//class Light
+	//{
+	//public:
+	//	void Generate(Mesh mesh)
+	//	{
+	//		glGenVertexArrays(1, &vao_);
+	//		glBindVertexArray(vao_);
 
-			glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo_[0]);
-			// note that we update the lamp's position attribute's stride to reflect the updated buffer data
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-			glEnableVertexAttribArray(0);
-		}
+	//		glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo_[0]);
+	//		// note that we update the lamp's position attribute's stride to reflect the updated buffer data
+	//		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	//		glEnableVertexAttribArray(0);
+	//	}
 
-	private:
-		GLuint vao_ = 0;
-	};
+	//private:
+	//	GLuint vao_ = 0;
+	//};
 
 	class Pipeline
 	{
@@ -358,9 +372,9 @@ namespace gpr5300
 			if (GetKeyState('S') & 0x8000)
 				cameraPos -= cameraSpeed * cameraFront;
 			if (GetKeyState('A') & 0x8000)
-				cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+				cameraPos -= normalize(cross(cameraFront, cameraUp)) * cameraSpeed;
 			if (GetKeyState('D') & 0x8000)
-				cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+				cameraPos += normalize(cross(cameraFront, cameraUp)) * cameraSpeed;
 		}
 
 	private:
@@ -372,14 +386,14 @@ namespace gpr5300
 		Pipeline pipeline_;
 		Texture texture_;
 		Mesh mesh_;
-		Light light_;
+		//	Light light_;
 		float tt_ = 0.0f;
 	};
 
 	void CubeScene::Begin()
 	{
 		glEnable(GL_DEPTH_TEST);
-		texture_.CreateTexture("data/textures/amouJeff.jpg");
+		texture_.CreateTexture("data/textures/amouJeff.png");
 		mesh_.Generate();
 		pipeline_.Load(mesh_);
 	}
