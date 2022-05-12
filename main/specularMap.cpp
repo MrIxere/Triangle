@@ -23,7 +23,7 @@ namespace gpr5300
 	class Texture
 	{
 	public:
-		void CreateTexture(const std::string& file_path)
+		void CreateTexture(const std::string& file_path, auto textureNumber)
 		{
 			data_ = stbi_load(file_path.c_str(),
 				&texWidth_, &texHeight_, &nrChannels_, 0);
@@ -31,7 +31,7 @@ namespace gpr5300
 			{
 				//TODO
 			}
-			glActiveTexture(GL_TEXTURE0);
+			glActiveTexture(textureNumber);
 			glGenTextures(1, &texture_);
 			glBindTexture(GL_TEXTURE_2D, texture_);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth_, texHeight_, 0, GL_RGBA, GL_UNSIGNED_BYTE, data_);
@@ -59,7 +59,6 @@ namespace gpr5300
 	{
 	public:
 		glm::mat4 view_ = glm::mat4(1.0f);
-		//glm::mat4 view = glm::mat4(1.0f);
 		void Generate()
 		{
 			// VAO
@@ -120,14 +119,14 @@ namespace gpr5300
 			/*glUniform3f(objectColor, abs(cos(t)), abs(sin(t)), abs(tan(t)));*/
 			glUniform3f(lightColor, 1.0f, 1.0f, 1.0f);
 			glUniform3f(viewPos, 0.0f, 0.0f, 2.0f);
-			glUniform1f(diffuse, 1);
-			glUniform3f(specular, 0.5f, 0.5f, 0.5f);
-			glUniform1f(shininess, 32);
+			glUniform1i(diffuse, 0);
+			glUniform1i(specular, 1);
+			glUniform1f(shininess, 10);
 			glUniform3f(ambientL, 0.2f, 0.2f, 0.2f);
-			glUniform3f(diffuseL, 0.5f, 0.5f, 0.5f);
-			glUniform3f(specularL, 1.0f, 1.0f, 1.0f);
+			glUniform3f(diffuseL, 1.0f, 1.0f, 1.0f);
+			glUniform3f(specularL, 0.5f, 0.5f, 0.5f);
 
-			model_ = rotate(model_, glm::radians(0.5f), glm::vec3(1.0f, 0.1f, 0.0f));
+			model_ = rotate(model_, glm::radians(0.1f), glm::vec3(1.0f, 0.1f, 0.0f));
 			projection_ = glm::perspective(glm::radians(45.f), (float)1920 / (float)1080, 0.1f, 100.0f);
 			view_ = translate(view_, glm::vec3(0.0f, 0.0f, 0.0f));
 			// retrieve the matrix uniform locations
@@ -139,7 +138,6 @@ namespace gpr5300
 			glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, &projection_[0][0]);
 
 			glBindVertexArray(vao_);
-			glActiveTexture(GL_TEXTURE1);
 			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 		}
 		GLuint program = 0;
@@ -307,7 +305,7 @@ namespace gpr5300
 		void Load(Mesh& mesh)
 		{
 			//Load shaders
-			const auto vertexContent = LoadFile("data/shaders/light/light.vert");
+			const auto vertexContent = LoadFile("data/shaders/specularMap/specularMap.vert");
 			const auto* ptr = vertexContent.data();
 			vertexShader_ = glCreateShader(GL_VERTEX_SHADER);
 			glShaderSource(vertexShader_, 1, &ptr, nullptr);
@@ -319,7 +317,7 @@ namespace gpr5300
 			{
 				std::cerr << "Error while loading vertex shader\n";
 			}
-			const auto fragmentContent = LoadFile("data/shaders/light/light.frag");
+			const auto fragmentContent = LoadFile("data/shaders/specularMap/specularMap.frag");
 			ptr = fragmentContent.data();
 			fragmentShader_ = glCreateShader(GL_FRAGMENT_SHADER);
 			glShaderSource(fragmentShader_, 1, &ptr, nullptr);
@@ -384,7 +382,8 @@ namespace gpr5300
 		glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 		Pipeline pipeline_;
-		Texture texture_;
+		Texture mainTexture_;
+		Texture specTexture_;
 		Mesh mesh_;
 		//	Light light_;
 		float tt_ = 0.0f;
@@ -393,7 +392,8 @@ namespace gpr5300
 	void CubeScene::Begin()
 	{
 		glEnable(GL_DEPTH_TEST);
-		texture_.CreateTexture("data/textures/amouJeff.png");
+		mainTexture_.CreateTexture("data/textures/amouJeff.png", GL_TEXTURE0);
+		specTexture_.CreateTexture("data/textures/heart2.png", GL_TEXTURE1);
 		mesh_.Generate();
 		pipeline_.Load(mesh_);
 	}
@@ -403,7 +403,8 @@ namespace gpr5300
 		//Unload program/pipeline
 		mesh_.Delete();
 		pipeline_.Delete();
-		texture_.Delete();
+		mainTexture_.Delete();
+		specTexture_.Delete();
 	}
 
 	void CubeScene::Update(float dt)
