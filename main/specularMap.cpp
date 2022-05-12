@@ -123,10 +123,10 @@ namespace gpr5300
 			glUniform1i(specular, 1);
 			glUniform1f(shininess, 10);
 			glUniform3f(ambientL, 0.2f, 0.2f, 0.2f);
-			glUniform3f(diffuseL, 1.0f, 1.0f, 1.0f);
-			glUniform3f(specularL, 0.5f, 0.5f, 0.5f);
+			glUniform3f(diffuseL, 0.5f, 0.5f, 0.5f);
+			glUniform3f(specularL, 1.5f, 1.5f, 1.5f);
 
-			model_ = rotate(model_, glm::radians(0.1f), glm::vec3(1.0f, 0.1f, 0.0f));
+			model_ = rotate(model_, glm::radians(0.1f), glm::vec3(1.0f, 0.1f, 1.0f));
 			projection_ = glm::perspective(glm::radians(45.f), (float)1920 / (float)1080, 0.1f, 100.0f);
 			view_ = translate(view_, glm::vec3(0.0f, 0.0f, 0.0f));
 			// retrieve the matrix uniform locations
@@ -393,7 +393,7 @@ namespace gpr5300
 	{
 		glEnable(GL_DEPTH_TEST);
 		mainTexture_.CreateTexture("data/textures/amouJeff.png", GL_TEXTURE0);
-		specTexture_.CreateTexture("data/textures/heart2.png", GL_TEXTURE1);
+		specTexture_.CreateTexture("data/textures/Jeff.png", GL_TEXTURE1);
 		mesh_.Generate();
 		pipeline_.Load(mesh_);
 	}
