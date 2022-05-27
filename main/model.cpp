@@ -317,7 +317,7 @@ namespace gpr5300
 			{
 				std::cerr << "Error while loading vertex shader\n";
 			}
-			const auto fragmentContent = LoadFile("data/shaders/specularMap/specularMap.frag");
+			const auto fragmentContent = LoadFile("data/shaders/model/model.frag");
 			ptr = fragmentContent.data();
 			fragmentShader_ = glCreateShader(GL_FRAGMENT_SHADER);
 			glShaderSource(fragmentShader_, 1, &ptr, nullptr);
@@ -392,8 +392,7 @@ namespace gpr5300
 	void CubeScene::Begin()
 	{
 		glEnable(GL_DEPTH_TEST);
-		mainTexture_.CreateTexture("data/textures/amouJeff.png", GL_TEXTURE0);
-		specTexture_.CreateTexture("data/textures/Jeff.png", GL_TEXTURE1);
+		mainTexture_.CreateTexture("data/textures/amogus/amogus.obj", GL_TEXTURE0);
 		mesh_.Generate();
 		pipeline_.Load(mesh_);
 	}

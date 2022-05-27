@@ -182,7 +182,7 @@ namespace gpr5300
 		}
 	};
 
-	struct Pipeline
+	struct Shader
 	{
 		GLuint vertexShader_ = 0;
 		GLuint fragmentShader_ = 0;
@@ -242,7 +242,7 @@ namespace gpr5300
 	private:
 		//float t = 0.0f;
 		Texture texture_;
-		Pipeline shader_;
+		Shader shader_;
 		Mesh mesh_;
 		float t = 0.0f;
 	};

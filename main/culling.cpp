@@ -145,40 +145,55 @@ namespace gpr5300
 		float vertices_[72] =
 		{
 			//Front
-			-0.5f, -0.5f, -0.5f, //0
-			-0.5f, 0.5f, -0.5f,
+			-0.5,  0.5, -0.5, //0
+			-0.5, -0.5, -0.5,
+			 0.5, -0.5, -0.5,
+			 0.5,  0.5, -0.5, 
+
+			//Back
+			-0.5f, -0.5f, 0.5f, //4
+			-0.5f, 0.5f, 0.5f,
+			 0.5f, 0.5f, 0.5f,
+			 0.5f, -0.5f, 0.5f,
+
+			//0.5f, 0.5f, 0.5f, //4
+			//0.5f, -0.5f, 0.5f,
+			//-0.5f, -0.5f, 0.5f,
+			//-0.5f, 0.5f, 0.5f,
+			//
+			//
+			//
+			/////Right
+			0.5f, -0.5f, -0.5f, //8
+			0.5f, 0.5f, -0.5f,
+			0.5f, 0.5f, 0.5f,
+			0.5f, -0.5f, 0.5f,
+			//Bottom
+			0.5f, -0.5f, 0.5f, //20
+			-0.5f, -0.5f, 0.5f,
+			-0.5f, -0.5f, -0.5f,
+			0.5f, -0.5f, -0.5f,
+
+
+			//Top
+			-0.5f, 0.5f, -0.5f, //16
 			 0.5f, 0.5f, -0.5f,
-			 0.5f, -0.5f, -0.5f,
+			 0.5f, 0.5f, 0.5f,
+			-0.5f, 0.5f, 0.5f,
 
-			 //Back
-			 -0.5f, -0.5f, 0.5f, //4
-			 -0.5f, 0.5f, 0.5f,
-			  0.5f, 0.5f, 0.5f,
-			  0.5f, -0.5f, 0.5f,
+			
+			//Left
+			-0.5f, -0.5f, -0.5f, //12
+			-0.5f, 0.5f, -0.5f,
+			-0.5f, 0.5f, 0.5f,
+			-0.5f, -0.5f, 0.5f,
+			
 
-			  //Right
-			  0.5f, -0.5f, -0.5f, //8
-			  0.5f, 0.5f, -0.5f,
-			  0.5f, 0.5f, 0.5f,
-			  0.5f, -0.5f, 0.5f,
 
-			  //Left
-			  -0.5f, -0.5f, -0.5f, //12
-			  -0.5f, 0.5f, -0.5f,
-			  -0.5f, 0.5f, 0.5f,
-			  -0.5f, -0.5f, 0.5f,
-
-			  //Top
-			  -0.5f, 0.5f, -0.5f, //16
-			   0.5f, 0.5f, -0.5f,
-			   0.5f, 0.5f, 0.5f,
-			  -0.5f, 0.5f, 0.5f,
-
-			  //Bottom
-			  -0.5f, -0.5f, -0.5f, //20
-			   0.5f, -0.5f, -0.5f,
-			   0.5f, -0.5f, 0.5f,
-			  -0.5f, -0.5f, 0.5f
+			///////
+			///
+			///
+			///
 
 		};
 	
@@ -189,8 +204,8 @@ namespace gpr5300
 			0, 2, 3,
 
 			//Back
-			4, 5, 7,
-			5, 6, 7,
+			4, 5, 6,
+			4, 6, 7,
 
 			//Right
 			8, 9, 10,
@@ -264,10 +279,10 @@ namespace gpr5300
 			0.0f, 1.0f, 0.0f,
 			0.0f, 1.0f, 0.0f,
 
-			0.0f, -1.0f,0.0f,
-			0.0f, -1.0f,0.0f,
-			0.0f, -1.0f,0.0f,
-			0.0f, -1.0f,0.0f,
+			0.0f, -1.0f, 0.0f,
+			0.0f, -1.0f, 0.0f,
+			0.0f, -1.0f, 0.0f,
+			0.0f, -1.0f, 0.0f,
 
 		};
 
@@ -299,7 +314,7 @@ namespace gpr5300
 	//	GLuint vao_ = 0;
 	//};
 
-	class Pipeline
+	class Shader
 	{
 	public:
 		void Load(Mesh& mesh)
@@ -381,7 +396,7 @@ namespace gpr5300
 		glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 		glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-		Pipeline pipeline_;
+		Shader pipeline_;
 		Texture mainTexture_;
 		Texture specTexture_;
 		Mesh mesh_;
@@ -392,6 +407,9 @@ namespace gpr5300
 	void CubeScene::Begin()
 	{
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glFrontFace(GL_CW);	
 		mainTexture_.CreateTexture("data/textures/amouJeff.png", GL_TEXTURE0);
 		specTexture_.CreateTexture("data/textures/Jeff.png", GL_TEXTURE1);
 		mesh_.Generate();
