@@ -291,23 +291,6 @@ namespace gpr5300
 		glm::mat4 projection_ = glm::mat4(1.0f);
 	};
 
-	//class Light
-	//{
-	//public:
-	//	void Generate(Mesh mesh)
-	//	{
-	//		glGenVertexArrays(1, &vao_);
-	//		glBindVertexArray(vao_);
-
-	//		glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo_[0]);
-	//		// note that we update the lamp's position attribute's stride to reflect the updated buffer data
-	//		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	//		glEnableVertexAttribArray(0);
-	//	}
-
-	//private:
-	//	GLuint vao_ = 0;
-	//};
 
 	class Shader
 	{
@@ -383,6 +366,15 @@ namespace gpr5300
 				cameraPos -= normalize(cross(cameraFront, cameraUp)) * cameraSpeed;
 			if (GetKeyState('D') & 0x8000)
 				cameraPos += normalize(cross(cameraFront, cameraUp)) * cameraSpeed;
+
+			SDL_GetRelativeMouseState(&mouseX_, &mouseY_);
+			float xOffset = mouseX_ * sensitivity_/5;
+			float yOffset = mouseY_ * sensitivity_/5;
+			direction.x += xOffset;
+			direction.y += yOffset;
+
+			cameraFront.x = direction.x;
+			cameraFront.y = -direction.y;
 		}
 
 	private:
@@ -397,6 +389,10 @@ namespace gpr5300
 		Mesh mesh_;
 		//	Light light_;
 		float tt_ = 0.0f;
+
+		int mouseX_, mouseY_;
+		glm::vec3 direction = glm::vec3(0.0f, 0.0f, 0.0f);
+		const float sensitivity_ = 0.01f;
 	};
 
 	void CubeScene::Begin()
