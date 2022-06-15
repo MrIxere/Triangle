@@ -1,3 +1,5 @@
+#pragma once
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -11,8 +13,7 @@
 #include "scene.h"
 #include <windows.h>
 
-
-#define STB_IMAGE_IMPLEMENTATION
+	
 #include "stb_image.h"
 
 //TODO
@@ -20,7 +21,7 @@
 
 namespace gpr5300
 {
-	class Texture
+	class CullTexture
 	{
 	public:
 		void CreateTexture(const std::string& file_path, auto textureNumber)
@@ -55,7 +56,7 @@ namespace gpr5300
 		int nrChannels_ = 0;
 	};
 
-	class Mesh
+	class CullMesh
 	{
 	public:
 		glm::mat4 view_ = glm::mat4(1.0f);
@@ -292,13 +293,13 @@ namespace gpr5300
 	};
 
 
-	class Shader
+	class CullShader
 	{
 	public:
-		void Load(Mesh& mesh)
+		void Load(CullMesh& mesh)
 		{
 			//Load shaders
-			const auto vertexContent = LoadFile("data/shaders/culling/culling.vert");
+			const auto vertexContent = gpr5300::LoadFile("data/shaders/culling/culling.vert");
 			const auto* ptr = vertexContent.data();
 			vertexShader_ = glCreateShader(GL_VERTEX_SHADER);
 			glShaderSource(vertexShader_, 1, &ptr, nullptr);
@@ -310,7 +311,7 @@ namespace gpr5300
 			{
 				std::cerr << "Error while loading vertex shader\n";
 			}
-			const auto fragmentContent = LoadFile("data/shaders/culling/culling.frag");
+			const auto fragmentContent = gpr5300::LoadFile("data/shaders/culling/culling.frag");
 			ptr = fragmentContent.data();
 			fragmentShader_ = glCreateShader(GL_FRAGMENT_SHADER);
 			glShaderSource(fragmentShader_, 1, &ptr, nullptr);
@@ -347,7 +348,7 @@ namespace gpr5300
 		GLuint fragmentShader_ = 0;
 	};
 
-	class CubeScene final : public Scene
+	class CullScene final : public gpr5300::Scene
 	{
 	public:
 		void Begin() override;
@@ -383,10 +384,10 @@ namespace gpr5300
 		glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 		glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-		Shader pipeline_;
-		Texture mainTexture_;
-		Texture specTexture_;
-		Mesh mesh_;
+		CullShader pipeline_;
+		CullTexture mainTexture_;
+		CullTexture specTexture_;
+		CullMesh mesh_;
 		//	Light light_;
 		float tt_ = 0.0f;
 
@@ -395,7 +396,7 @@ namespace gpr5300
 		const float sensitivity_ = 0.01f;
 	};
 
-	void CubeScene::Begin()
+	void CullScene::Begin()
 	{
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
@@ -407,7 +408,7 @@ namespace gpr5300
 		pipeline_.Load(mesh_);
 	}
 
-	void CubeScene::End()
+	void CullScene::End()
 	{
 		//Unload program/pipeline
 		mesh_.Delete();
@@ -416,7 +417,7 @@ namespace gpr5300
 		specTexture_.Delete();
 	}
 
-	void CubeScene::Update(float dt)
+	void CullScene::Update(float dt)
 	{
 		//Draw program
 		tt_ += dt;
@@ -431,7 +432,7 @@ namespace gpr5300
 
 int main(int argc, char** argv)
 {
-	gpr5300::CubeScene scene;
+	gpr5300::CullScene scene;
 	gpr5300::Engine engine(&scene);
 	engine.Run();
 	return EXIT_SUCCESS;
