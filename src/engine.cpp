@@ -63,8 +63,9 @@ namespace gpr5300
                 scene_->OnEvent(event);
                 ImGui_ImplSDL2_ProcessEvent(&event);
             }
-            glClearColor( 1.0, 0.3, 0.4, 0);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClearColor(1.0, 0.3, 0.4, 0);
+            //glClearColor(1.0, 1.0, 1.0, 0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
             
 
             scene_->Update(dt.count());
