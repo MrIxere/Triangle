@@ -26,10 +26,11 @@ namespace gpr5300
 
 		sceneShader_.Load("data/shaders/model/model.vert", "data/shaders/model/model.frag");
 		simpleColorShader_.Load("data/shaders/model/model_single_colour.vert", "data/shaders/model/model_single_colour.frag");
+
 		model_.InitModel("data/models/backpack.obj");
 		model_.view = translate(model_.view, glm::vec3(0.0f, 0.0f, -2.0f));
 		/*
-		model_.InitModel("data/textures/amogus/amogus.obj");
+		model_.InitModel("data/textures/amogus/among us.obj");
 		
 		model_.view = translate(model_.view, glm::vec3(0.0f, 0.0f, -20.0f));*/
 	}
