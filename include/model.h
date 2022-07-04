@@ -6,6 +6,7 @@
 
 #include "mesh.h"
 #include "shader.h"
+#include "engine.h"
 
 namespace gpr5300
 {
@@ -14,8 +15,6 @@ namespace gpr5300
 	public:
 		std::vector<Texture> textures_loaded;
 		glm::mat4 model = glm::mat4(1.0);
-		glm::mat4 view = glm::mat4(1.0);
-		glm::mat4 projection;
 		void InitModel(const char* path);
 		void Draw(const CShader& shader) const;
 

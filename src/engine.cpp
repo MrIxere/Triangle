@@ -112,6 +112,9 @@ namespace gpr5300
         );
         glRenderContext_ = SDL_GL_CreateContext(window_);
         //setting vsync
+
+        SDL_SetRelativeMouseMode(SDL_TRUE);
+
         SDL_GL_SetSwapInterval(1);
 
         if (GLEW_OK != glewInit())

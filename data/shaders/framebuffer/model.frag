@@ -6,19 +6,20 @@ in vec3 FragPos;
 in vec3 Normal;
 in vec2 TexCoords;
 
-struct DirLight {
+struct DirLight 
+{
     vec3 direction;
-
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
 };
 
-struct Material{
+struct Material
+{
     sampler2D texture_diffuse1;
     sampler2D texture_specular1;
     float shininess;
-};  
+};
 
 uniform vec3 viewPos;
 
@@ -29,7 +30,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 void main()
 {    
     vec3 norm = normalize(Normal);
-    vec3 viewDir = normalize(viewPos + FragPos);
+    vec3 viewDir = normalize(viewPos - FragPos);
     
     vec3 result;
     result = CalcDirLight(dirLight, norm, viewDir);
