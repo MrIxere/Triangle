@@ -36,11 +36,13 @@ namespace gpr5300
 		screenShader_.Load("data/shaders/framebuffer/framebuffer.vert", "data/shaders/framebuffer/framebuffer.frag");
 
 
-		model_.InitModel("data/models/backpack.obj");
-		/*
-		model_.InitModel("data/textures/amogus/among us.obj");
+		//model_.InitModel("data/models/golf/scene_mesh_decimated_textured.obj", false);
+		//model_.InitModel("data/models/cat/12221_Cat_v1_l3.obj", false);
+		//model_.InitModel("data/textures/nanosuit/nanosuit.obj", false);
+		//model_.InitModel("data/models/backpack.obj", true);
 		
-		model_.view = translate(model_.view, glm::vec3(0.0f, 0.0f, -2.0f));*/
+		//This one doesn't work with culling dunno why
+		model_.InitModel("data/models/summoner rift/summoner_rift.obj", false);
 	}
 	
 	void CleanScene::End()

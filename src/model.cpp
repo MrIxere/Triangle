@@ -10,9 +10,9 @@ namespace gpr5300
 {
     unsigned int TextureFromFile(const char* path, const std::string& directory, bool gamma = false);
 
-	void Model::InitModel(const char* path)
+	void Model::InitModel(const char* path, bool flip)
 	{
-		stbi_set_flip_vertically_on_load(true);
+		stbi_set_flip_vertically_on_load(flip);
         loadModel(path);
 	}
 
