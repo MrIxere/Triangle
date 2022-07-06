@@ -37,9 +37,10 @@ namespace gpr5300
 
 
 		//model_.InitModel("data/models/golf/scene_mesh_decimated_textured.obj", false);
-		//model_.InitModel("data/models/cat/12221_Cat_v1_l3.obj", false);
 		//model_.InitModel("data/textures/nanosuit/nanosuit.obj", false);
 		model_.InitModel("data/models/backpack.obj", true);
+		//model_.InitModel("data/models/cat/12221_Cat_v1_l3.obj", false);
+		//model_.InitModel("data/textures/planet/planet.obj", true);
 		
 		//This one doesn't work with culling dunno why
 		//model_.InitModel("data/models/summoner rift/summoner_rift.obj", false);

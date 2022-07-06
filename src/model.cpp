@@ -27,32 +27,12 @@ namespace gpr5300
 
     void Model::MultipleDraw(const CShader& shader, int amount) const
     {
-        unsigned int diffuseNr = 1;
-        unsigned int specularNr = 1;
-        unsigned int normalNr = 1;
-        for (unsigned int i = 0; i < textures_loaded.size(); i++)
-        {
-            glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
-            // retrieve texture number (the N in diffuse_textureN)
-            std::string number;
-            std::string name = textures_loaded[i].type;
-            if (name == "texture_diffuse")
-                number = std::to_string(diffuseNr++);
-            else if (name == "texture_specular")
-                number = std::to_string(specularNr++);
-            else if (name == "texture_normal")
-                number = std::to_string(normalNr++);
-
-            shader.SetInt(("material." + name + number).c_str(), i);
-            glBindTexture(GL_TEXTURE_2D, textures_loaded[i].id);
-        }
-
-        for (unsigned int i = 0; i < meshes_.size(); i++)
-        {
-            glBindVertexArray(meshes_[i].vao_);
-            glDrawElementsInstanced(
-                GL_TRIANGLES, meshes_[i].indices.size(), GL_UNSIGNED_INT, 0, amount
-            );
+        for (const auto& meshe : meshes_)
+        {   
+			meshe.BindTexture(shader);
+            glBindVertexArray(meshe.vao_);
+            glBindBuffer(GL_ARRAY_BUFFER, meshe.vbo_);
+            glDrawElementsInstanced(GL_TRIANGLES, meshe.indices.size(), GL_UNSIGNED_INT, nullptr, amount);
         }
     }
 

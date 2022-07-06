@@ -27,6 +27,7 @@ namespace gpr5300
 	public:
 		void InitMesh(std::vector<Vertex> vertices, std::vector<unsigned> indices, std::vector<Texture> textures);
 		void Draw(const CShader& shader) const;
+		void BindTexture(const CShader& shader) const;
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
 		std::vector<Texture> textures;

@@ -38,8 +38,8 @@ namespace gpr5300
 
 		//model_.InitModel("data/models/golf/scene_mesh_decimated_textured.obj", false);
 		//model_.InitModel("data/models/cat/12221_Cat_v1_l3.obj", false);
-		//model_.InitModel("data/textures/nanosuit/nanosuit.obj", false);
-		model_.InitModel("data/models/backpack.obj", true);
+		model_.InitModel("data/textures/nanosuit/nanosuit.obj", false);
+		//model_.InitModel("data/models/backpack.obj", true);
 		
 		//This one doesn't work with culling dunno why
 		//model_.InitModel("data/models/summoner rift/summoner_rift.obj", false);
@@ -80,7 +80,7 @@ namespace gpr5300
 		sceneShader_.SetMatrix4("view", view);
 		sceneShader_.SetMatrix4("projection", projection);
 
-		model = scale(model_.model, glm::vec3(0.25f, 0.25f, 0.25f));
+		model = scale(model_.model, glm::vec3(0.2f, 0.2f, 0.2f));
 
 		sceneShader_.SetMatrix4("model", model);
 
