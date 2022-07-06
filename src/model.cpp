@@ -13,6 +13,7 @@ namespace gpr5300
 	void Model::InitModel(const char* path, bool flip)
 	{
 		stbi_set_flip_vertically_on_load(flip);
+        
         loadModel(path);
 	}
 
@@ -23,6 +24,37 @@ namespace gpr5300
             meshes_[i].Draw(shader);
         }
 	}
+
+    void Model::MultipleDraw(const CShader& shader, int amount) const
+    {
+        unsigned int diffuseNr = 1;
+        unsigned int specularNr = 1;
+        unsigned int normalNr = 1;
+        for (unsigned int i = 0; i < textures_loaded.size(); i++)
+        {
+            glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
+            // retrieve texture number (the N in diffuse_textureN)
+            std::string number;
+            std::string name = textures_loaded[i].type;
+            if (name == "texture_diffuse")
+                number = std::to_string(diffuseNr++);
+            else if (name == "texture_specular")
+                number = std::to_string(specularNr++);
+            else if (name == "texture_normal")
+                number = std::to_string(normalNr++);
+
+            shader.SetInt(("material." + name + number).c_str(), i);
+            glBindTexture(GL_TEXTURE_2D, textures_loaded[i].id);
+        }
+
+        for (unsigned int i = 0; i < meshes_.size(); i++)
+        {
+            glBindVertexArray(meshes_[i].vao_);
+            glDrawElementsInstanced(
+                GL_TRIANGLES, meshes_[i].indices.size(), GL_UNSIGNED_INT, 0, amount
+            );
+        }
+    }
 
 	void Model::loadModel(const std::string& path)
 	{
@@ -90,6 +122,15 @@ namespace gpr5300
                 vec.y = mesh->mTextureCoords[0][i].y;
                 vertex.TexCoords = vec;
             }
+
+            if (mesh->HasTangentsAndBitangents())
+            {
+                vector.x = mesh->mTangents[i].x;
+                vector.y = mesh->mTangents[i].y;
+                vector.z = mesh->mTangents[i].z;
+                vertex.tangent = vector;
+            }
+
             else
                 vertex.TexCoords = glm::vec2(0.0f, 0.0f);
 

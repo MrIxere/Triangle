@@ -12,6 +12,7 @@ namespace gpr5300
 		glm::vec3 Position;
 		glm::vec3 Normal;
 		glm::vec2 TexCoords;
+		glm::vec3 tangent;
 	};
 
 	struct Texture
@@ -29,9 +30,9 @@ namespace gpr5300
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
 		std::vector<Texture> textures;
+		unsigned int vao_{}, vbo_{}, ebo_{};
 
 	private:
-		unsigned int vao_{}, vbo_{}, ebo_{};
 		void SetupMesh();
 	};
 

@@ -21,6 +21,8 @@ namespace gpr5300
 		void OnEvent(const SDL_Event& event) override;
 
 	private:
+		glm::mat4* modelMatrices;
+		unsigned int amount = 1;
 		float tt_ = 0;
 		int numberOfModels_ = 0;
 		CShader skyShader_;

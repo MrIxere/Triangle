@@ -30,10 +30,10 @@ namespace gpr5300
 		frameBuffer_.InitFrameBuffer();
 		skybox_.skyboxTexture = skybox_.loadSkybox(skybox_.skyboxFaces);
 		skybox_.BindSkybox();
-		skyShader_.Load("data/shaders/framebuffer/cubemap.vert", "data/shaders/framebuffer/cubemap.frag");
+		skyShader_.Load("data/shaders/normal/cubemap.vert", "data/shaders/normal/cubemap.frag");
 
-		sceneShader_.Load("data/shaders/framebuffer/model.vert", "data/shaders/framebuffer/model.frag");
-		screenShader_.Load("data/shaders/framebuffer/framebuffer.vert", "data/shaders/framebuffer/framebuffer.frag");
+		sceneShader_.Load("data/shaders/normal/model.vert", "data/shaders/normal/model.frag");
+		screenShader_.Load("data/shaders/normal/framebuffer.vert", "data/shaders/normal/framebuffer.frag");
 
 
 		//model_.InitModel("data/models/golf/scene_mesh_decimated_textured.obj", false);
@@ -43,6 +43,45 @@ namespace gpr5300
 		
 		//This one doesn't work with culling dunno why
 		//model_.InitModel("data/models/summoner rift/summoner_rift.obj", false);
+		sceneShader_.Use();
+		modelMatrices = new glm::mat4[amount];
+		for (unsigned int i = 0; i < amount; i++)
+		{
+			constexpr float offset = 10.0f;
+			glm::mat4 model = glm::mat4(1.0f);
+			model = translate(model, glm::vec3(offset * i, 0.0, 0.0));
+			modelMatrices[i] = model;
+		}
+
+		unsigned int buffer;
+		glGenBuffers(1, &buffer);
+		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
+
+		for (unsigned int i = 0; i < model_.meshes_.size(); i++)
+		{
+			unsigned int VAO = model_.meshes_[i].vao_;
+			glBindVertexArray(VAO);
+			// vertex attributes
+			std::size_t vec4Size = sizeof(glm::vec4);
+			glEnableVertexAttribArray(4);
+			glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+			glEnableVertexAttribArray(5);
+			glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+			glEnableVertexAttribArray(6);
+			glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+			glEnableVertexAttribArray(7);
+			glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+
+			glVertexAttribDivisor(4, 1);
+			glVertexAttribDivisor(5, 1);
+			glVertexAttribDivisor(6, 1);
+			glVertexAttribDivisor(7, 1);
+
+			glBindVertexArray(0);
+		}
+
+
 	}
 	
 	void CleanScene::End()
@@ -84,7 +123,8 @@ namespace gpr5300
 
 		sceneShader_.SetMatrix4("model", model);
 
-		model_.Draw(sceneShader_);
+		//model_.Draw(sceneShader_);
+		model_.MultipleDraw(sceneShader_, amount);
 
 		//draw skybox
 		glDepthFunc(GL_LEQUAL);
