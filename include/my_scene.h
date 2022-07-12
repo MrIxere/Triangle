@@ -7,6 +7,7 @@
 #include "cubemap.h"
 #include "camera.h"
 #include "framebuffer.h"
+#include "shadowbuffer.h"
 
 namespace gpr5300
 {
@@ -17,22 +18,24 @@ namespace gpr5300
 		void End() override;
 		void Update(float dt) override;
 		void ProcessInput(float dt);
-		void mouse_callback(double xPosInput, double yPosInput);
 		void OnEvent(const SDL_Event& event) override;
 
 	private:
 		glm::mat4* modelMatrices;
-		unsigned int amount = 10;
+		unsigned int amount = 1;
 		float tt_ = 0;
 		int numberOfModels_ = 0;
 		CShader skyShader_;
 		CShader sceneShader_;
 		CShader simpleColorShader_;
 		CShader screenShader_;
+		CShader blurShader_;
+		CShader shadowShader_;
 		std::vector<Model> models_;
 		Model model_;
 		Skybox skybox_;
 		FrameBuffer frameBuffer_;
+		ShadowBuffer shadowBuffer_;
 		Camera cam_{ glm::vec3(0.0f, 0.0f, 3.0f) };
 	};
 

@@ -1,0 +1,69 @@
+# Blender MTL File: 'SteamPunk_DeathStar_2019_b279_v006.blend'
+# Material Count: 6
+
+newmtl centerRing_br
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.571202 0.640000 0.631830
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd sourceimages\\3364184-texture-background-illustration-of-brushed-glossy-metal-surface.jpg
+
+newmtl deathRayRingOuter_br
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.571202 0.640000 0.631830
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd sourceimages\\3364184-texture-background-illustration-of-brushed-glossy-metal-surface.jpg
+
+newmtl deathRay_br
+Ns 194.117647
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd -s 0.500000 0.500000 1.000000 sourceimages\\seamless-textures-game-textures86-LD.png
+
+newmtl deathStar_body_br
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.568245 0.445410
+Ks 0.100000 0.100000 0.100000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Bump -bm 0.050000 sourceimages\\concrete_base_0062_01.jpg
+map_Kd sourceimages\\concrete_base_0062_01.jpg
+
+newmtl panels_br
+Ns 27.450980
+Ka 0.500000 0.500000 0.500000
+Kd 0.640000 0.640000 0.640000
+Ks 0.214286 0.214286 0.214286
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd -s 20.000000 1.000000 20.000000 sourceimages\\2011_12_17-galery-wood.jpg
+
+newmtl rivets_br
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.571202 0.640000 0.631830
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd sourceimages\\3364184-texture-background-illustration-of-brushed-glossy-metal-surface.jpg

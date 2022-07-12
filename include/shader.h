@@ -3,6 +3,7 @@
 #include <xstring>
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
 
 namespace gpr5300
 {

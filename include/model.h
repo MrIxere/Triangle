@@ -18,10 +18,10 @@ namespace gpr5300
 		void InitModel(const char* path, bool flip);
 		void Draw(const CShader& shader) const;
 
+		glm::mat4* modelAmount;
 		void MultipleDraw(const CShader& shader, int amount) const;
 		std::vector<CMesh> meshes_;
 		CMesh mesh;
-
 	private:
 		std::string directory_;
 

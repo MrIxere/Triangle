@@ -16,8 +16,9 @@ namespace gpr5300
 		void bindDefaultFrameBuffer();
 		void createScreenVao();
 		unsigned int texture;
-		unsigned int textureColorBuffer;
+		unsigned int textureColorBuffer = 0;
 		unsigned int vao{}, vbo{}, fbo{}, rbo{};
+		const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 
 	private:
 		float quadVertices[4 * 6] =

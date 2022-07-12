@@ -1,0 +1,25 @@
+# Blender MTL File: 'ak evil dragon.blend'
+# Material Count: 2
+
+newmtl Preview_AK47_Evildragon3_D
+Ns 2.078999
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump 1P_PW_AK47_Evildragon3_N.png
+map_Kd 1P_PW_AK47_Evildragon3_D.png
+
+newmtl VFX_Zcom_Energy_008
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.158621 0.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.158621 0.000000 1.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_d VFX_Trail032.png

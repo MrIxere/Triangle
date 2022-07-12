@@ -5,6 +5,7 @@
 
 #include "shader.h"
 #include "stb_image.h"
+#include "my_scene.h"
 
 namespace gpr5300
 {
@@ -14,7 +15,7 @@ namespace gpr5300
 	{
 		stbi_set_flip_vertically_on_load(flip);
         
-        loadModel(path);
+		loadModel(path);
 	}
 
 	void Model::Draw(const CShader& shader) const
