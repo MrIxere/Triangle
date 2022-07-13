@@ -64,7 +64,7 @@ namespace gpr5300
 
 		void BindTexture()
 		{
-			data = stbi_load("data/textures/amouJeff.png", &texWidth_, &texHeight_, &nrChannels_, 0);
+			data = stbi_load("data/textures/Jeff.png", &texWidth_, &texHeight_, &nrChannels_, 0);
 			glGenTextures(1, &texture_);
 			glBindTexture(GL_TEXTURE_2D, texture_);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth_, texHeight_, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);

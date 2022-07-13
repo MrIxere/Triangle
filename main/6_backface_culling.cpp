@@ -402,7 +402,7 @@ namespace gpr5300
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 		glFrontFace(GL_CW);	
-		mainTexture_.CreateTexture("data/textures/amouJeff.png", GL_TEXTURE0);
+		mainTexture_.CreateTexture("data/textures/Jeff.png", GL_TEXTURE0);
 		specTexture_.CreateTexture("data/textures/Jeff.png", GL_TEXTURE1);
 		mesh_.Generate();
 		pipeline_.Load(mesh_);

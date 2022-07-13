@@ -391,7 +391,7 @@ namespace gpr5300
 	void CubeScene::Begin()
 	{
 		glEnable(GL_DEPTH_TEST);
-		mainTexture_.CreateTexture("data/textures/amouJeff.png", GL_TEXTURE0);
+		mainTexture_.CreateTexture("data/textures/doge.png", GL_TEXTURE0);
 		specTexture_.CreateTexture("data/textures/Jeff.png", GL_TEXTURE1);
 		mesh_.Generate();
 		pipeline_.Load(mesh_);

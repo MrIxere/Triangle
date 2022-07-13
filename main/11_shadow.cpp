@@ -42,14 +42,10 @@ namespace gpr5300
 
 
 		//model_.InitModel("data/models/golf/scene_mesh_decimated_textured.obj", false);
-		//model_.InitModel("data/models/rome/marforio.obj", false);
 		model_.InitModel("data/textures/nanosuit/nanosuit.obj", false);
 		//model_.InitModel("data/textures/cyborg/cyborg.obj", false);
-		//model_.InitModel("data/models/panama/UNSC_Panama_v011_Display.obj", false);
-		//model_.InitModel("data/models/pelican/D77-TC_Pelican_v014.obj", false);
-		//model_.InitModel("data/models/waifu/Mian-Preated-Sim-02.obj", false);
 		//model_.InitModel("data/models/dragon/ak evil dragon.obj", false);
-		model_.InitModel("data/models/backpack.obj", true);
+		//model_.InitModel("data/models/backpack.obj", true);
 		//model_.InitModel("data/models/cat/12221_Cat_v1_l3.obj", false);
 		//model_.InitModel("data/textures/planet/planet.obj", true);
 		

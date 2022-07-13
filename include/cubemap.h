@@ -22,12 +22,12 @@ namespace gpr5300
 
 		std::vector<std::string> skyboxFaces
 		{
-			"data/textures/skybox/skybox/right.jpg",
-			"data/textures/skybox/skybox/left.jpg",
-            "data/textures/skybox/skybox/top.jpg",
-            "data/textures/skybox/skybox/bottom.jpg",
-            "data/textures/skybox/skybox/front.jpg",
-            "data/textures/skybox/skybox/back.jpg"
+			"data/textures/skybox/myskybox/right.jpg",//
+			"data/textures/skybox/myskybox/left.jpg",//
+            "data/textures/skybox/myskybox/top.jpg",
+            "data/textures/skybox/myskybox/bottom.jpg",
+            "data/textures/skybox/myskybox/front.jpg",
+            "data/textures/skybox/myskybox/back.jpg"//
 		};
 
         float skyboxVertices[108]
